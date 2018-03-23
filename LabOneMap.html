@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="style.css"/>
+  </head>
+<body style="max-width:600px">
+	<h1 align="center" style="color: #2F4F4F"> Welcome to our new map! </h1>
+
+	<h3 align="center"> <button id="direction" onclick="panup()">&#8679;</button></h3>
+  	<h4 align="center"> <button id="direction" onclick="panleft()">&#8678;</button>
+  	<button id="direction" onclick="panright()">&#8680;</button></h4>
+  	<h5 align="center"> <button id="direction" onclick="pandown()">&#8681;</button></h5>
+
+    <h6 align= "center"> <button class="button" id="tiltback" onClick="tiltback()">Normal View</button> <button style="font-size:24px; border-radius: 50%; border: 3px solid powderblue; color: #2F4F4F" id="tilt" onClick="tiltdown()">45°</button> <button class="button" id="drop" onclick="drop()">Our favorite places on Campus</button>
+    <button class="button" id="clear" onclick="clearMarkers()">Clear Markers</button> <button style="font-size:30px;color:#2F4F4F" id="zoomin" onClick="zoomin()">+</button>
+	<button style="font-size:30px;color:#2F4F4F" id="zoomout" onClick="zoomout()">-</button> </h6>
+	<div id="map"></div>
+	<script>
+		var neighborhoods = [
+		{lat: 59.346612,  lng:18.072507},
+		{lat: 59.347264,  lng:18.072098},
+		{lat: 59.352372,  lng:18.068934},
+		{lat: 59.348670,  lng:18.071073}
+		];
+
+		var map;
+		var markers = [];
+		var marker;
+		var markertwo;
+		var beachMarker;
+		function initMap(){
+			// Map options
+			map = new google.maps.Map(document.getElementById('map'),  {
+				zoom:16,
+				center:{lat: 59.3498092, lng:18.0684758},
+				gestureHandling: 'none',
+				zoomControl: false
+			});
+			marker = new google.maps.Marker({
+				map:map,
+				draggable: true,
+				animation: google.maps.Animation.DROP,
+				position:{lat:59.3498092, lng:18.0684758}
+			});
+			marker.addListener('click', toggleBounce);
+			var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+  			var beachMarker = new google.maps.Marker({
+    		position: {lat: 59.350428, lng: 18.072773},
+    		map: map,
+    		icon: image
+  			});
+		}
+			
+		function toggleBounce() {
+			if (marker.getAnimation() !== null) {
+          		marker.setAnimation(null);
+        	} else {
+          		marker.setAnimation(google.maps.Animation.BOUNCE);
+        	}
+		}
+			//Add marker
+			//marker = new google.maps.Marker({
+			//	map: map ,
+			//	draggable: true,
+			//	animation: google.maps.Animation.DROP,
+			//	position:{lat: 59.3499986, lng: 18.067499},
+			//});
+			//marker.addListener('click', toggleBounce);
+		function drop() {
+			clearMarkers();
+			for (var i = 0; i < neighborhoods.length; i++) {
+          		addMarkerWithTimeout(neighborhoods[i], i * 200);
+        	}
+		}
+		function addMarkerWithTimeout(position, timeout) {
+        	window.setTimeout(function() {
+          		markers.push(new google.maps.Marker({
+            	position: position,
+            	map: map,
+            	animation: google.maps.Animation.DROP
+          		}));
+        	}, timeout);
+      	}
+
+      	function clearMarkers() {
+        	for (var i = 0; i < markers.length; i++) {
+          	markers[i].setMap(null);
+        	}
+        	markers = [];
+      	}
+
+		function zoomin(){
+			console.log(map.zoom);
+			map.setZoom(map.zoom + 1);
+		}
+		function zoomout(){
+			console.log(map.zoom);
+			map.setZoom(map.zoom - 1);
+		}
+
+		function tiltdown(){
+			map.setTilt(45);
+		}
+
+		function tiltback(){
+			map.setTilt(0);
+		}
+		function panup(){
+			map.panBy(0,-20)
+		}
+		function pandown(){
+			map.panBy(0,20)
+		}
+		function panright(){
+			map.panBy(20,0)
+		}
+		function panleft(){
+			map.panBy(-20,0)
+		}
+		
+	</script>
+    <script 
+    src="https://maps.googleapis.com/maps/api/js?callback=initMap"async defer>
+    </script>
+		
+
+	
+</body>
+</html>
